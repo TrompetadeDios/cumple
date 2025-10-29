@@ -1,0 +1,495 @@
+/**
+ * Archivo: estilos.css
+ * Estilos para la página 'cumple.html'.
+ * * INCLUYE: Diseño final, neón/gradient, nueva fuente y la ESTRUCTURA FINAL del VISOR RECTANGULAR.
+ * * MODIFICACIONES FINALES: Animación de gradiente en pétalos y configuración de fondo de imagen estática.
+ * * NUEVAS MODIFICACIONES: Estilos para el botón y visor del video local.
+ * * MODIFICACIÓN DE AUDIO: Estilos para el control de la música de fondo flotante.
+ */
+
+/* 1. RESET BÁSICO Y VARIABLES */
+:root {
+    --color-fondo: #0a0a0f; /* Azul/Negro muy oscuro para un look moderno */
+    --color-primario: #FFD700; /* Amarillo Girasol vivo */
+    --color-secundario: #4CAF50; /* Verde Hoja */
+    --color-texto: #e0e0e0; /* Gris claro */
+    
+    /* Variables para el Efecto Neón/Gradient del Marco Rectangular */
+    --color-neon-borde-rect: #ff7300; /* Azul cielo para el marco rectangular (originalmente era cian/azul) */
+    --color-neon-sombra-rect: #ffe54f; /* Rosa fuerte para el resplandor (originalmente era amarillo/dorado) */
+    --color-fondo-oscuro: #000000; /* Negro para fondos modales */
+    
+    --sombra-moderna: 0 10px 30px rgba(255, 215, 0, 0.15); 
+    --transicion-rapida: all 1.5s ease-in-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    /* Asegúrate de que las fuentes estén enlazadas en tu HTML */
+    font-family: 'Poppins', sans-serif; 
+    
+    /* ***** CONFIGURACIÓN DE FONDO DE IMAGEN ESTATICA ***** */
+    /* Asegúrate de que la ruta sea correcta (ej: './imagenes/fondo-estatico.jpg') */
+    background-image: url('./imagenes/fondo.jpg'); /* RUTA CORREGIDA CON TU ÚLTIMA ESPECIFICACIÓN */
+    background-size: cover; 
+    background-attachment: fixed; 
+    background-repeat: no-repeat;
+    /* **************************************************** */
+    
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    /* Quitamos overflow: hidden para que JS lo controle en el pop-up */
+}
+
+/* Opcional: Cargar fuentes modernas de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Caveat:wght@600;700&display=swap');
+
+
+/* 2. ESTILOS DEL ENCABEZADO (HEADER) */
+.hero {
+    text-align: center;
+    padding: 30px 20px 5px 20px; /* Reducimos el padding inferior para hacer espacio al botón */
+    /* Mantenemos el radial-gradient para oscurecer sutilmente la parte superior y que el texto se lea mejor */
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 70%); 
+    position: relative;
+    z-index: 100; /* Alto z-index para que esté por encima de las flores */
+}
+
+.hero h1 {
+    font-size: 3em;
+    font-weight: 600;
+    color: var(--color-primario);
+    letter-spacing: 2px;
+    text-shadow: 0 0 15px rgb(255, 95, 162); 
+}
+
+.hero p {
+    margin-top: 10px;
+    font-size: 1.1em;
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+/* ***** ESTILOS DEL NUEVO BOTÓN PARA ABRIR EL VIDEO ***** */
+.boton-neon {
+    display: block;
+    width: fit-content;
+    margin: 15px auto 30px auto; /* Centrar y separar del hero */
+    padding: 12px 25px;
+    background-color: transparent;
+    border: 3px solid var(--color-neon-borde-rect); /* Borde azul/cian */
+    border-radius: 10px;
+    color: var(--color-neon-borde-rect);
+    font-size: 1.2em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transicion-rapida);
+    text-shadow: 0 0 8px var(--color-neon-borde-rect);
+    box-shadow: 0 0 15px var(--color-neon-borde-rect), inset 0 0 15px var(--color-neon-borde-rect);
+    text-decoration: none;
+    z-index: 1000; 
+}
+
+.boton-neon:hover {
+    color: var(--color-fondo-oscuro); 
+    background-color: var(--color-neon-borde-rect);
+    text-shadow: none;
+    box-shadow: 0 0 25px var(--color-neon-borde-rect), 0 0 50px var(--color-neon-borde-rect);
+}
+/* **************************************************** */
+
+
+/* 3. ESTILOS DEL CONTENEDOR DEL JARDÍN */
+.jardin-contenedor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px; 
+}
+
+
+/* 4. ESTILOS BASE DEL GIRASOL */
+
+.girasol {
+    position: absolute;
+    width: 60px; 
+    height: 60px; 
+    transform-style: preserve-3d; 
+    cursor: pointer;
+    opacity: 0; 
+    transition: all 0.5s cubic-bezier(.47,1.64,.41,.8); 
+    transform-origin: 50% 100%; 
+}
+
+/* El Núcleo de la Flor (círculo base, ahora con la foto como fondo) */
+.centro {
+    width: 40px;
+    height: 40px;
+    background-color: #583300; 
+    border-radius: 50%;
+    position: relative; 
+    
+    /* CORRECCIÓN DE CENTRADO */
+    top: 130%; 
+    left: 22%; 
+    transform: translate(-50%, -50%); 
+    /* ********************************** */
+    
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    overflow: hidden; 
+    
+    /* PROPIEDADES PARA CENTRAR LA IMAGEN DE FONDO */
+    background-size: cover; 
+    background-position: center;
+}
+
+/* Los Pétalos - INICIO MODIFICACIÓN GRADIENTE ANIMADO */
+.petalo {
+    position: absolute;
+    width: 30px;
+    height: 80px;
+    
+    /* DEFINICIÓN DEL GRADIENTE ANIMADO */
+    background: linear-gradient(
+        270deg, 
+        var(--color-primario), /* Amarillo Girasol */
+        #FF8C00, /* Naranja Intenso */
+        var(--color-primario),
+        #FFD700 /* Amarillo Suave */
+    );
+    background-size: 400% 400%; /* Hacemos el gradiente muy grande para el efecto de movimiento */
+    
+    /* Aplicar la animación definida */
+    animation: gradientAnimation 10s ease infinite; 
+    /* FIN DE LA MODIFICACIÓN GRADIENTE ANIMADO */
+    
+    border-radius: 50% / 60px 60px 5px 5px; 
+    transform-origin: 50% 50%; 
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+/* El Tallo */
+.tallo {
+    position: absolute;
+    bottom: 0;
+    left: 50%; 
+    width: 4px;
+    height: 100px; 
+    background: linear-gradient(to top, var(--color-secundario) 0%, #1c5e20 100%);
+    transform: translateX(-50%);
+    z-index: 1;
+    opacity: 0; 
+}
+
+
+/* 7. ESTILOS DEL VISOR GLOBAL RECTANGULAR (MODO POP-UP DE FOTOS) */
+
+#visor-global {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* Fondo muy oscuro */
+    z-index: 2000; /* Asegura que esté por encima de todo */
+    display: none; /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#visor-global.activo {
+    display: flex;
+    opacity: 1;
+}
+
+.visor-contenido {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    width: 550px; /* Tamaño del marco */
+    height: auto; /* Se ajusta al contenido */
+    padding: 20px; /* Espacio para el efecto neón */
+}
+
+/* Botón de Cierre de FOTOS */
+#cerrar-visor {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2.5em;
+    cursor: pointer;
+    z-index: 20;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+#cerrar-visor:hover {
+    opacity: 1;
+    text-shadow: 0 0 10px white;
+}
+
+/* Estilos del MARCO NEÓN RECTANGULAR de FOTOS */
+.marco-neon-rectangular {
+    width: 100%;
+    height: 100%;
+    
+    /* 1. Fondo principal para el área de la foto */
+    background-color: black; 
+    
+    /* 2. Marco Degradado/Neón */
+    border-radius: 15px; /* Bordes suaves */
+    border: 5px solid transparent; 
+    background-clip: padding-box; 
+    
+    /* El Degradado del Borde (Usando border-image para el efecto conic gradient en el borde) */
+    border-image: conic-gradient(
+        from 0deg, 
+        var(--color-neon-sombra-rect), 
+        var(--color-neon-borde-rect), 
+        var(--color-neon-sombra-rect), 
+        var(--color-neon-borde-rect) 
+    ) 1; 
+    
+    /* 3. Efecto Neón de Resplandor */
+    box-shadow: 
+        0 0 15px var(--color-neon-sombra-rect), 
+        0 0 30px var(--color-neon-borde-rect);
+        
+    /* 4. Layout interno: Imagen arriba, texto abajo */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Mantiene la imagen y texto dentro del marco */
+}
+
+#visor-imagen {
+    /* La imagen ocupa la mayor parte del espacio */
+    flex-grow: 1; 
+    width: 100%;
+    height: auto; 
+    object-fit: cover; /* Recorta para cubrir el área */
+    display: block;
+    max-height: 70vh; /* Limita la altura máxima de la imagen */
+}
+
+/* El contenedor del texto (usamos la ID #visor-texto) */
+#visor-texto {
+    /* El texto debe ir debajo de la imagen, ocupando la parte inferior del marco */
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+/* Tipografía de las frases */
+
+.girasol-info-texto h3 {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    color: var(--color-primario);
+    font-family: 'Poppins', sans-serif; 
+}
+
+.girasol-info-texto p {
+    font-size: 1em; /* Aumentamos el tamaño para el visor */
+    font-weight: 700;
+    line-height: 1.4;
+    color: #ffffff; 
+    margin-bottom: 8px; 
+    font-family: 'Caveat', cursive; 
+    /* Resplandor al texto */
+    text-shadow: 0 0 5px #ffffff00, 0 0 10px #ffffff00, 0 0 15px var(--color-neon-sombra-rect); 
+}
+
+.referencia-biblica {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--color-secundario); 
+    text-transform: uppercase;
+    font-style: italic;
+    display: block;
+}
+
+
+/* ----------------------------------------------------- */
+/* 9. ESTILOS DEL VISOR DE VIDEO (Mantenida) */
+/* ----------------------------------------------------- */
+
+#visor-video-global {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.98); /* Fondo casi negro total */
+    z-index: 3000; /* Más alto que el visor de fotos (2000) */
+    display: none; /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+#visor-video-global.activo {
+    display: flex;
+    opacity: 1;
+}
+
+.visor-contenido-video {
+    position: relative;
+    width: 90%;
+    max-width: 900px; 
+    aspect-ratio: 16 / 9; /* Relación de aspecto estándar de video */
+    padding: 20px; 
+    box-sizing: content-box; 
+}
+
+/* Marco Neón para el Video */
+.marco-neon-rectangular-video {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-fondo-oscuro); 
+    border-radius: 15px;
+    border: 5px solid transparent; 
+    
+    border-image: conic-gradient(
+        from 0deg, 
+        var(--color-neon-sombra-rect), 
+        var(--color-neon-borde-rect), 
+        var(--color-neon-sombra-rect), 
+        var(--color-neon-borde-rect)
+    ) 1; 
+    
+    box-shadow: 
+        0 0 15px var(--color-neon-sombra-rect), 
+        0 0 30px var(--color-neon-borde-rect);
+    
+    overflow: hidden;
+}
+
+/* Estilo para el elemento de video */
+#video-player {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Botón de cierre superior del video */
+.boton-cerrar-video {
+    position: absolute;
+    top: -10px; 
+    right: -10px;
+    background: var(--color-neon-borde-rect);
+    border: 2px solid white;
+    color: var(--color-fondo-oscuro);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 34px;
+    text-align: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    z-index: 3010; 
+    transition: transform 0.2s;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+.boton-cerrar-video:hover {
+    transform: scale(1.1);
+}
+
+/* Controles adicionales (Descarga / Volver al Jardín) */
+.controles-video {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    margin-top: 25px;
+}
+
+.boton-control {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: 600;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    /* Estilos Neón suaves */
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-neon-sombra-rect);
+    color: var(--color-texto);
+    cursor: pointer; /* Añadido para que se vea como un botón */
+}
+
+.boton-control:hover {
+    background-color: var(--color-neon-sombra-rect);
+    color: white;
+}
+/* ----------------------------------------------------- */
+
+
+/* 10. ANIMACIONES GLOBALES (Keyframes para el gradiente de los pétalos) */
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+/* ----------------------------------------------------- */
+/* 11. ESTILOS DEL CONTROL DE MÚSICA FLOTANTE (Nuevo) */
+/* ----------------------------------------------------- */
+
+.control-musica-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--color-neon-sombra-rect); /* Dorado/Amarillo */
+    color: var(--color-neon-sombra-rect);
+    font-size: 1.2em;
+    cursor: pointer;
+    z-index: 5000; /* Asegura que esté por encima de todo */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Sombra dorada suave */
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+    /* Ajuste visual para el emoji/texto */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.control-musica-flotante:hover {
+    background-color: rgba(255, 215, 0, 0.2);
+}
+
+/* Estado activo (música reproduciéndose) */
+.control-musica-flotante.activo {
+    border-color: var(--color-primario);
+    color: var(--color-primario);
+    box-shadow: 0 0 15px var(--color-primario), 0 0 25px rgba(255, 215, 0, 0.4);
+    background-color: rgba(255, 215, 0, 0.1);
+}
