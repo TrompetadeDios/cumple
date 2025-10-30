@@ -1,16 +1,15 @@
 /**
- * Archivo: interactividad.js
- * Lógica principal: generación, animación y control de visores (FOTOS y VIDEO).
- * * * MODIFICACIONES FINALES:
- * 1. FIX DE BUG: Corregido un typo que impedía la creación de girasoles (Regresan las flores).
- * 2. CONTENIDO: Aumento a 25 girasoles con más frases bíblicas.
- * 3. AUDIO: La música de fondo se inicia AUTOMÁTICAMENTE con el PRIMER clic en un girasol.
+ * Archivo: interactividad.js (Completo y Optimizado)
+ * * Versión final con:
+ * - 25 contenidos (títulos, descripciones, referencias y rutas de fotos).
+ * - Optimización de rendimiento (animación CSS y carga diferida de imágenes).
+ * - Lógica de inicio de música con el primer clic del usuario.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     
     // -----------------------------------------------------
-    // 1. ESTRUCTURA DE CONTENIDO (Frases Inspiradoras y Fotos)
+    // 1. ESTRUCTURA DE CONTENIDO (25 Frases Inspiradoras y Fotos)
     // -----------------------------------------------------
 
     const contenidos = [
@@ -165,17 +164,15 @@ document.addEventListener('DOMContentLoaded', () => {
             referencia: "Hebreos 11:1",
             foto: './imagenes/foto25.jpg' 
         },
-        // ***** FIN DE CONTENIDO ADICIONAL *****
+        // ***** FIN DE 25 CONTENIDOS *****
     ];
     
     const contenedor = document.querySelector('.jardin-contenedor');
-    const NUM_GIRASOLES = 25; // Número total de girasoles.
+    const NUM_GIRASOLES = 25; 
 
     // -----------------------------------------------------
     // REFERENCIAS Y ESTADO GLOBAL
     // -----------------------------------------------------
-
-    // Referencias del Visor de FOTOS
     const visorGlobal = document.getElementById('visor-global');
     const cerrarBoton = document.getElementById('cerrar-visor');
     const visorImagen = document.getElementById('visor-imagen');
@@ -183,73 +180,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const visorDescripcion = document.getElementById('visor-descripcion');
     const visorReferencia = document.getElementById('visor-referencia');
     
-    // Referencias del Visor de VIDEO
     const abrirVideoBtn = document.getElementById('abrir-video-btn');
     const visorVideoGlobal = document.getElementById('visor-video-global');
     const cerrarVideoBoton = document.getElementById('cerrar-visor-video');
     const volverAlJardinBoton = document.getElementById('volver-al-jardin');
     const videoPlayer = document.getElementById('video-player'); 
     
-    // Referencias del AUDIO de fondo 
     const musicaFondo = document.getElementById('musica-fondo');
-    
-    // ***** NUEVA VARIABLE DE ESTADO PARA EL AUDIO *****
     let musicaIniciada = false; 
-    // *************************************************
 
     
     // -----------------------------------------------------
-    // 2. FUNCIÓN DE CREACIÓN Y ESTRUCTURA DEL GIRASOL
+    // 2. FUNCIÓN DE CREACIÓN Y ESTRUCTURA DEL GIRASOL (Optimizado)
     // -----------------------------------------------------
 
-    /**
-     * Crea un elemento HTML que representa un girasol.
-     */
     function crearGirasol(itemContenido) {
         const girasol = document.createElement('div');
-        girasol.classList.add('girasol');
+        girasol.classList.add('girasol', 'girasol-animado-css'); 
         
-        // Almacenamos los datos en el dataset para usarlos al hacer clic
         girasol.dataset.titulo = itemContenido.titulo;
-        girasol.dataset.descripcion = itemContenido.descripcion; // Línea corregida.
+        girasol.dataset.descripcion = itemContenido.descripcion; 
         girasol.dataset.referencia = itemContenido.referencia;
-        girasol.dataset.foto = itemContenido.foto;
+        girasol.dataset.foto = itemContenido.foto; 
         
-        // Crear el tallo
         const tallo = document.createElement('div');
         tallo.classList.add('tallo');
         girasol.appendChild(tallo);
 
-        // Crear el centro (el círculo base de la flor)
         const centro = document.createElement('div');
         centro.classList.add('centro');
-        
-        // Aplicamos la foto como fondo al centro 
-        centro.style.backgroundImage = `url(${itemContenido.foto})`;
-        centro.style.backgroundSize = 'cover';
-        centro.style.backgroundPosition = 'center';
-        
         girasol.appendChild(centro);
 
-        // Crear los pétalos (12 pétalos)
         const NUM_PETALOS = 12;
         for (let i = 0; i < NUM_PETALOS; i++) {
             const petalo = document.createElement('div');
             petalo.classList.add('petalo');
-            
             const rotation = i * (360 / NUM_PETALOS);
-            
-            // CÓDIGO CLAVE DE POSICIONAMIENTO
-            petalo.style.transform = `
-                rotate(${rotation}deg) 
-                translateY(-50px)
-            `; 
-            
+            petalo.style.transform = `rotate(${rotation}deg) translateY(-50px)`; 
             petalo.style.opacity = 0; 
             girasol.appendChild(petalo);
         }
 
-        // Añadir el evento de clic
         girasol.addEventListener('click', manejarClickGirasol);
         
         return { girasol, tallo, centro };
@@ -257,13 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // -----------------------------------------------------
-    // 3. FUNCIÓN DE ANIMACIÓN DE BROTAR Y BALANCEO 
+    // 3. FUNCIÓN DE ANIMACIÓN DE BROTAR (Simplificada)
     // -----------------------------------------------------
 
-    /**
-     * Aplica la animación inicial de "brotar" y luego el movimiento de "viento".
-     */
-    function animarGirasol(girasolElement) {
+    function animarGirasol(girasolElement, delayFactor) {
         
         // 1. Animación de BROTAR (Crecimiento y Aparición)
         anime.timeline({
@@ -273,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .add({
             opacity: [0, 1], 
             duration: 100,
-            delay: anime.random(0, 500) 
+            delay: delayFactor 
         })
         .add({
             // Simula brotar desde abajo
@@ -289,31 +257,16 @@ document.addEventListener('DOMContentLoaded', () => {
             duration: 800,
             delay: anime.stagger(50) 
         }, '-=800'); 
-
-        
-        // 2. Movimiento REALISTA (Viento)
-        anime({
-            targets: girasolElement,
-            rotateZ: [
-                { value: 5, duration: 4000, easing: 'easeInOutSine' }, 
-                { value: -5, duration: 4000, easing: 'easeInOutSine' }, 
-                { value: 0, duration: 2000, easing: 'easeInOutSine' } 
-            ],
-            loop: true,
-            direction: 'alternate',
-            duration: 10000 + anime.random(0, 5000), 
-            delay: anime.random(2000, 5000),
-            easing: 'easeInOutSine'
-        });
     }
 
     // -----------------------------------------------------
     // 4. LÓGICA DEL VISOR GLOBAL DE FOTOS Y CLIC EN GIRASOL
     // -----------------------------------------------------
     
-    // Función para abrir el visor (pop-up)
     function abrirVisor(datos) {
-        visorImagen.src = datos.foto;
+        // Carga la imagen SOLAMENTE en este momento
+        visorImagen.src = datos.foto; 
+        
         visorTitulo.textContent = datos.titulo;
         visorDescripcion.textContent = datos.descripcion;
         visorReferencia.textContent = `— ${datos.referencia}`;
@@ -322,46 +275,34 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = 'hidden'; 
     }
 
-    // Función para cerrar el visor (pop-up)
     function cerrarVisor() {
+        visorImagen.src = ''; 
         visorGlobal.classList.remove('activo');
-        document.body.style.overflow = ''; // Restaura el scroll
+        document.body.style.overflow = ''; 
     }
 
-    // Listener para el botón de cierre
     cerrarBoton.addEventListener('click', cerrarVisor);
-    
-    // Listener para cerrar al hacer clic fuera del marco (en el fondo oscuro)
     visorGlobal.addEventListener('click', (e) => {
         if (e.target.id === 'visor-global') {
             cerrarVisor();
         }
     });
 
-    /**
-     * Maneja el clic en el girasol: inicia música (si es la primera vez), detiene animación y abre el visor.
-     */
     function manejarClickGirasol(event) {
         let targetGirasol = event.currentTarget;
         
-        // 1. LÓGICA DE INICIO DE MÚSICA CON EL PRIMER CLIC
+        // LÓGICA DE INICIO DE MÚSICA con el primer clic
         if (!musicaIniciada) {
             musicaFondo.play().then(() => {
                 musicaIniciada = true;
-                // Si el botón flotante existe (porque falló el autoplay inicial), actualizamos su estado
                 const controlBtn = document.getElementById('control-musica');
                 if (controlBtn) {
                     controlBtn.innerHTML = '🔊'; 
                     controlBtn.classList.add('activo');
                     musicaFondo.dataset.wasPlaying = 'true';
                 }
-                console.log("Música de fondo iniciada por interacción del usuario (clic en girasol).");
             }).catch(e => console.error("Error al intentar reproducir música:", e));
         }
-        // FIN LÓGICA DE INICIO DE MÚSICA
-
-        // Detiene momentáneamente la animación de viento 
-        anime.remove(targetGirasol); 
 
         const datos = {
             titulo: targetGirasol.dataset.titulo,
@@ -371,11 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         abrirVisor(datos);
-        
-        // Re-inicia la animación de viento después de un breve retraso
-        setTimeout(() => {
-            animarGirasol(targetGirasol); 
-        }, 800);
     }
     
     // -----------------------------------------------------
@@ -386,36 +322,30 @@ document.addEventListener('DOMContentLoaded', () => {
         visorVideoGlobal.classList.add('activo');
         document.body.style.overflow = 'hidden'; 
         
-        // Intentar reproducir automáticamente
-        videoPlayer.play().catch(error => {
-            console.log("La reproducción automática de video fue bloqueada. El usuario debe pulsar 'Play'.", error);
-        });
-        
-        // Pausa la música de fondo mientras el video se reproduce (Mejora UX)
         if (!musicaFondo.paused) {
             musicaFondo.pause();
-            musicaFondo.dataset.wasPlaying = 'true'; // Guardamos el estado para reanudar
+            musicaFondo.dataset.wasPlaying = 'true'; 
         } else {
             musicaFondo.dataset.wasPlaying = 'false';
         }
+
+        videoPlayer.play().catch(error => {
+            console.log("La reproducción automática de video fue bloqueada.", error);
+        });
     }
 
     function cerrarVisorVideo() {
-        // PAUSA CLAVE: Detiene la reproducción del video cuando se cierra el modal
         videoPlayer.pause(); 
-        // Vuelve el video al inicio
         videoPlayer.currentTime = 0; 
         
         visorVideoGlobal.classList.remove('activo');
-        document.body.style.overflow = ''; // Restaura el scroll
+        document.body.style.overflow = ''; 
         
-        // Reanuda la música de fondo (si estaba marcada como activa antes de abrir el video)
         if (musicaFondo.dataset.wasPlaying === 'true' && musicaFondo.paused) {
              musicaFondo.play().catch(e => console.log("No se pudo reanudar la música.", e));
         }
     }
 
-    // Listeners para el Visor de Video
     abrirVideoBtn.addEventListener('click', abrirVisorVideo);
     cerrarVideoBoton.addEventListener('click', cerrarVisorVideo);
     volverAlJardinBoton.addEventListener('click', cerrarVisorVideo);
@@ -428,26 +358,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // -----------------------------------------------------
     // 6. LÓGICA DEL AUDIO DE FONDO (Control Flotante)
     // -----------------------------------------------------
-
-    // Si la música se bloquea al inicio, creamos el botón flotante.
+    
     musicaFondo.play().catch(error => {
-        // Marcamos que no se inició automáticamente
         musicaIniciada = false; 
         crearBotonControlMusica();
     });
 
-    // Aseguramos que si se logra reproducir automáticamente, se marque como iniciada
     musicaFondo.addEventListener('play', () => {
         musicaIniciada = true;
     });
 
     function crearBotonControlMusica() {
-        // Si el botón ya existe o la música ya se inició (por el clic del girasol), salimos.
         if (document.getElementById('control-musica')) return; 
 
         const controlBtn = document.createElement('button');
         controlBtn.id = 'control-musica';
-        controlBtn.innerHTML = '🔇'; // Icono inicial: Silenciado
+        controlBtn.innerHTML = '🔇'; 
         controlBtn.classList.add('control-musica-flotante');
 
         document.body.appendChild(controlBtn);
@@ -456,14 +382,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (musicaFondo.paused) {
                 musicaFondo.play();
                 musicaFondo.dataset.wasPlaying = 'true'; 
-                musicaIniciada = true; // El usuario lo activó
+                musicaIniciada = true; 
             } else {
                 musicaFondo.pause();
                 musicaFondo.dataset.wasPlaying = 'false'; 
             }
         });
         
-        // Sincronización de iconos con el estado real del audio
         musicaFondo.addEventListener('play', () => {
              controlBtn.innerHTML = '🔊'; 
              controlBtn.classList.add('activo');
@@ -473,7 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
              controlBtn.classList.remove('activo');
         });
 
-        // Estado inicial del icono (debe ser muteado si el autoplay falló)
         if (!musicaFondo.paused && musicaFondo.volume > 0) {
             controlBtn.innerHTML = '🔊';
             controlBtn.classList.add('activo');
@@ -483,22 +407,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     // -----------------------------------------------------
     // 7. INICIALIZACIÓN: GENERAR Y COLOCAR GIRASOLES
     // -----------------------------------------------------
     
-    // Generar y colocar cada girasol
     for (let i = 0; i < NUM_GIRASOLES; i++) {
-        // Cicla a través de los contenidos disponibles.
         const contenidoItem = contenidos[i % contenidos.length]; 
         const { girasol, tallo, centro } = crearGirasol(contenidoItem);
         
-        // Posición aleatoria en la parte inferior de la pantalla (vw/vh)
         const x = anime.random(10, 90); 
         const y = anime.random(70, 95); 
         
-        // Aplicar posición inicial
         girasol.style.left = `${x}vw`;
         girasol.style.top = `${y}vh`;
         girasol.style.width = '60px'; 
@@ -506,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         contenedor.appendChild(girasol);
         
-        // Iniciar las animaciones
-        animarGirasol(girasol);
+        const delay = i * 200; // Retraso escalonado para suavizar la carga
+        animarGirasol(girasol, delay);
     }
 });
