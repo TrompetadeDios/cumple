@@ -4,9 +4,9 @@
 
 :root {
     --color-fondo: #0e0e1a;
-    --color-neon-principal: #ff74a4; /* Rosa Neón/Magenta */
+    --color-neon-principal: #f89645; /* Rosa Neón/Magenta */
     --color-neon-secundario: #ffd866; /* Amarillo Neón */
-    --color-neon-terciario: #66e0ff; /* Azul Neón/Cian */
+    --color-neon-terciario: #07fdc0; /* Azul Neón/Cian */
     --sombra-neon: 0 0 5px var(--color-neon-principal), 0 0 10px var(--color-neon-principal), 0 0 20px var(--color-neon-principal), 0 0 40px var(--color-neon-principal);
     --sombra-neon-amarillo: 0 0 5px var(--color-neon-secundario), 0 0 10px var(--color-neon-secundario);
     --sombra-neon-azul: 0 0 5px var(--color-neon-terciario), 0 0 10px var(--color-neon-terciario);
